@@ -1,89 +1,170 @@
 @import "tailwindcss";
 
 :root {
-  --royal: #1B3A8A;
-  --royal-dark: #0F2460;
-  --royal-light: #2952C4;
-  --sky: #6BA3D6;
-  --sky-light: #B8D4EE;
-  --gold: #C8993A;
-  --gold-light: #E8C06A;
-  --white: #FFFFFF;
-  --navy-text: #0F1E4A;
-  --gray: #F4F7FB;
+  /* Deep, editorial navy palette pulled from the business card */
+  --ink: #08153D;
+  --navy: #0E2657;
+  --royal: #1A3D8F;
+  --royal-soft: #2A56B4;
+  --sky: #6B9FD9;
+  --sky-soft: #C2D8EF;
+  --mist: #F4F6FB;
+  --paper: #FBFCFE;
+
+  /* Warm, restrained gold — closer to brushed brass than yellow */
+  --gold: #B8862B;
+  --gold-soft: #D9AE52;
+  --gold-pale: #F2E1B0;
+
+  --line: rgba(184, 134, 43, 0.28);
+  --line-cool: rgba(14, 38, 87, 0.08);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 body {
   font-family: var(--font-inter), system-ui, sans-serif;
-  color: var(--navy-text);
-  background: var(--white);
+  color: var(--ink);
+  background: var(--paper);
+  font-feature-settings: "ss01", "cv11";
+  letter-spacing: -0.005em;
 }
+
+::selection { background: var(--gold-pale); color: var(--ink); }
 
 .font-playfair { font-family: var(--font-playfair), Georgia, serif; }
-.font-inter { font-family: var(--font-inter), system-ui, sans-serif; }
+.font-inter    { font-family: var(--font-inter), system-ui, sans-serif; }
 
-/* Gradient helpers */
-.gradient-royal {
-  background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal) 50%, var(--royal-light) 100%);
-}
-.gradient-text {
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Editorial eyebrow label */
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
-/* Glass card */
-.glass {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.2);
+/* Refined hairline divider used between sections / list items */
+.hairline {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line) 20%, var(--line) 80%, transparent);
+}
+.hairline-cool {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line-cool) 20%, var(--line-cool) 80%, transparent);
 }
 
-/* Lift animation */
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Marble / watercolor backdrop — layered radials reminiscent of the card */
+.marble {
+  background-color: var(--ink);
+  background-image:
+    radial-gradient(60% 50% at 12% 18%, rgba(107,159,217,0.22) 0%, transparent 60%),
+    radial-gradient(45% 60% at 88% 78%, rgba(184,134,43,0.18) 0%, transparent 65%),
+    radial-gradient(80% 80% at 50% 50%, rgba(26,61,143,0.55) 0%, var(--ink) 75%);
 }
-.hover-lift:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 64px rgba(27,58,138,0.18);
+.marble-soft {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(50% 50% at 90% 10%, rgba(194,216,239,0.45) 0%, transparent 60%),
+    radial-gradient(45% 45% at 8% 95%, rgba(242,225,176,0.35) 0%, transparent 65%);
 }
 
-/* Gold dot decorative pattern */
-.dot-pattern {
-  background-image: radial-gradient(circle, rgba(200,153,58,0.25) 1px, transparent 1px);
-  background-size: 24px 24px;
+/* Subtle film-grain — keeps gradients from looking flat */
+.grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
 }
 
-/* Watercolor blob shapes */
-.blob {
-  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+/* Constellation of gold dots, echoing the business card */
+.dots {
+  background-image: radial-gradient(circle, rgba(217,174,82,0.35) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
+
+/* Buttons — refined, not bouncy */
+.btn-gold {
+  background: var(--gold);
+  color: var(--ink);
+  letter-spacing: 0.06em;
+  transition: background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.btn-gold:hover {
+  background: var(--gold-soft);
+  box-shadow: 0 10px 30px -12px rgba(184,134,43,0.55);
+}
+.btn-outline {
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #fff;
+  letter-spacing: 0.06em;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.btn-outline:hover {
+  border-color: var(--gold-soft);
+  background: rgba(184,134,43,0.08);
+}
+
+/* Form fields — sleek underlined inputs on dark */
+.field-dark {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  padding: 14px 0 12px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 200ms ease;
+  width: 100%;
+}
+.field-dark::placeholder { color: rgba(255,255,255,0.35); }
+.field-dark:focus { border-color: var(--gold-soft); }
+
+/* Card hover — small, deliberate lift */
+.card-lift {
+  transition: transform 320ms cubic-bezier(0.2, 0.6, 0.2, 1), box-shadow 320ms ease, border-color 320ms ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px -28px rgba(8,21,61,0.35);
+}
+
+/* Animated gold underline — appears on hover */
+.gold-underline {
+  position: relative;
+}
+.gold-underline::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -4px;
+  height: 1px; width: 0;
+  background: var(--gold-soft);
+  transition: width 320ms ease;
+}
+.gold-underline:hover::after { width: 100%; }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--gray); }
-::-webkit-scrollbar-thumb { background: var(--royal); border-radius: 3px; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--mist); }
+::-webkit-scrollbar-thumb { background: var(--royal); border-radius: 4px; }
 
-/* Mobile call button pulse */
-@keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(200,153,58,0.5); }
-  50% { box-shadow: 0 0 0 12px rgba(200,153,58,0); }
-}
-.pulse-gold { animation: pulse-gold 2s infinite; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-.float { animation: float 4s ease-in-out infinite; }
-
+/* Whisper-soft fade-in */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .fade-up { animation: fade-up 0.7s ease forwards; }
+
+/* Marquee-ready slow drift */
+@keyframes drift {
+  0%, 100% { transform: translate3d(0,0,0); }
+  50%      { transform: translate3d(0,-6px,0); }
+}
+.drift { animation: drift 9s ease-in-out infinite; }
