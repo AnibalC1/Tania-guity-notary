@@ -6,9 +6,15 @@
   --navy: #0E2657;
   --royal: #1A3D8F;
   --royal-soft: #2A56B4;
-  --sky: #6B9FD9;
-  --sky-soft: #C2D8EF;
-  --mist: #F4F6FB;
+
+  /* Lively cool blues — the watercolor wash on the card */
+  --cerulean: #3F86C9;
+  --sky: #6BA8E0;
+  --sky-mid: #9BC5EC;
+  --sky-soft: #C8DEF2;
+  --sky-pale: #E4EEF8;
+
+  --mist: #F4F7FB;
   --paper: #FBFCFE;
 
   /* Warm, restrained gold — closer to brushed brass than yellow */
@@ -18,6 +24,7 @@
 
   --line: rgba(184, 134, 43, 0.28);
   --line-cool: rgba(14, 38, 87, 0.08);
+  --line-sky: rgba(107, 168, 224, 0.35);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,20 +65,61 @@ body {
   height: 1px;
   background: linear-gradient(to right, transparent, var(--line-cool) 20%, var(--line-cool) 80%, transparent);
 }
+.hairline-sky {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line-sky) 20%, var(--line-sky) 80%, transparent);
+}
 
-/* Marble / watercolor backdrop — layered radials reminiscent of the card */
+/* Sky-tinted gold ribbon — used as a thin section accent */
+.ribbon {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--cerulean) 18%, var(--gold-soft) 50%, var(--sky) 82%, transparent 100%);
+  border-radius: 2px;
+}
+
+/* Marble / watercolor backdrop — layered radials echoing the card's blue washes */
 .marble {
   background-color: var(--ink);
   background-image:
-    radial-gradient(60% 50% at 12% 18%, rgba(107,159,217,0.22) 0%, transparent 60%),
-    radial-gradient(45% 60% at 88% 78%, rgba(184,134,43,0.18) 0%, transparent 65%),
-    radial-gradient(80% 80% at 50% 50%, rgba(26,61,143,0.55) 0%, var(--ink) 75%);
+    /* Pale aqua spotlight, top-left */
+    radial-gradient(55% 45% at 6% 14%, rgba(200, 222, 242, 0.32) 0%, rgba(155, 197, 236, 0.18) 32%, transparent 62%),
+    /* Cerulean wash sweeping lower-left */
+    radial-gradient(60% 55% at 22% 78%, rgba(107, 168, 224, 0.32) 0%, rgba(63, 134, 201, 0.16) 40%, transparent 70%),
+    /* Soft sky highlight, mid-upper */
+    radial-gradient(35% 40% at 48% 22%, rgba(107, 168, 224, 0.18) 0%, transparent 65%),
+    /* Gold splash bottom-right (echoing card sparkle) */
+    radial-gradient(40% 50% at 92% 82%, rgba(217, 174, 82, 0.22) 0%, transparent 65%),
+    /* Pale gold sparkle top-right */
+    radial-gradient(22% 30% at 88% 16%, rgba(242, 225, 176, 0.14) 0%, transparent 70%),
+    /* Royal foundation, deepening to ink at the edges */
+    radial-gradient(95% 95% at 55% 55%, rgba(42, 86, 180, 0.55) 0%, var(--ink) 80%);
 }
+
+/* Stronger watercolor variant for hero — even more contrast between sky and ink */
+.watercolor {
+  background-color: var(--ink);
+  background-image:
+    /* Bright sky wash, top-left torn edge */
+    radial-gradient(70% 65% at 0% 20%, rgba(228, 238, 248, 0.4) 0%, rgba(155, 197, 236, 0.28) 20%, rgba(107, 168, 224, 0.18) 42%, transparent 70%),
+    /* Cerulean lower-left ribbon */
+    radial-gradient(55% 60% at 18% 88%, rgba(63, 134, 201, 0.42) 0%, rgba(26, 61, 143, 0.25) 45%, transparent 75%),
+    /* Mid sky band */
+    radial-gradient(40% 35% at 38% 50%, rgba(107, 168, 224, 0.22) 0%, transparent 65%),
+    /* Gold sparkle, right edge */
+    radial-gradient(35% 50% at 96% 78%, rgba(217, 174, 82, 0.28) 0%, transparent 60%),
+    /* Pale gold dust, top right */
+    radial-gradient(28% 32% at 90% 14%, rgba(242, 225, 176, 0.18) 0%, transparent 65%),
+    /* Deep royal core */
+    radial-gradient(110% 100% at 70% 60%, rgba(42, 86, 180, 0.5) 0%, var(--ink) 78%);
+}
+
 .marble-soft {
   background-color: var(--paper);
   background-image:
-    radial-gradient(50% 50% at 90% 10%, rgba(194,216,239,0.45) 0%, transparent 60%),
-    radial-gradient(45% 45% at 8% 95%, rgba(242,225,176,0.35) 0%, transparent 65%);
+    radial-gradient(60% 55% at 90% 8%, rgba(155, 197, 236, 0.45) 0%, rgba(200, 222, 242, 0.25) 35%, transparent 70%),
+    radial-gradient(50% 50% at 6% 92%, rgba(228, 238, 248, 0.7) 0%, rgba(200, 222, 242, 0.35) 40%, transparent 75%),
+    radial-gradient(35% 40% at 78% 88%, rgba(242, 225, 176, 0.32) 0%, transparent 65%),
+    radial-gradient(28% 35% at 14% 18%, rgba(217, 174, 82, 0.12) 0%, transparent 70%);
 }
 
 /* Subtle film-grain — keeps gradients from looking flat */
@@ -88,6 +136,22 @@ body {
 .dots {
   background-image: radial-gradient(circle, rgba(217,174,82,0.35) 1px, transparent 1px);
   background-size: 28px 28px;
+}
+
+/* Sky-blue dot constellation — secondary accent */
+.dots-sky {
+  background-image: radial-gradient(circle, rgba(155, 197, 236, 0.45) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Watercolor sweep — soft cerulean glow used as floating accent */
+.glow-sky {
+  background: radial-gradient(circle, rgba(107, 168, 224, 0.28) 0%, rgba(63, 134, 201, 0.12) 45%, transparent 75%);
+  filter: blur(8px);
+}
+.glow-gold {
+  background: radial-gradient(circle, rgba(217, 174, 82, 0.22) 0%, rgba(184, 134, 43, 0.08) 50%, transparent 80%);
+  filter: blur(6px);
 }
 
 /* Buttons — refined, not bouncy */
