@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Phone,
@@ -23,6 +24,10 @@ import {
   Menu,
   X,
 } from "lucide-react";
+
+/* Tania's portrait. Drop the photo in `/public/tania.jpg` (or .png).      *
+ * If the file isn't there yet, the components fall back to the monogram.  */
+const PHOTO_SRC = "/tania.jpg";
 
 /* ─── Brand palette ──────────────────────────────────────────────
    Eight-step blue ramp + restrained gold accents. Blue carries the
@@ -146,6 +151,56 @@ function Section({ children, className = "", id = "", style }: { children: React
   );
 }
 
+/* Circular photo with a thin gold rim. Falls back to the monogram if the file
+   isn't available. Uses next/image for optimization on the priority hero shot. */
+function PortraitPhoto({
+  size,
+  priority = false,
+  rimWidth = 1.5,
+  className = "",
+  objectPosition = "center 22%",
+}: {
+  size: number;
+  priority?: boolean;
+  rimWidth?: number;
+  className?: string;
+  objectPosition?: string;
+}) {
+  const [errored, setErrored] = useState(false);
+
+  if (errored) {
+    return <Monogram size={size} />;
+  }
+
+  return (
+    <div
+      className={`relative rounded-full ${className}`}
+      style={{
+        width: size,
+        height: size,
+        background: `conic-gradient(from 140deg, ${C.gold}, ${C.goldSoft} 30%, ${C.gold} 60%, ${C.goldSoft} 100%)`,
+        padding: rimWidth,
+        boxShadow: `0 4px 12px -4px rgba(11,37,91,0.35)`,
+      }}
+    >
+      <div
+        className="relative w-full h-full rounded-full overflow-hidden"
+        style={{ background: C.ink }}
+      >
+        <Image
+          src={PHOTO_SRC}
+          alt="Tania Guity"
+          fill
+          sizes={`${size}px`}
+          priority={priority}
+          onError={() => setErrored(true)}
+          style={{ objectFit: "cover", objectPosition }}
+        />
+      </div>
+    </div>
+  );
+}
+
 /* Monogram mark — thin gold rim on a watercolor disc, like the headshot frame */
 function Monogram({ size = 40, onDark = true }: { size?: number; onDark?: boolean }) {
   const rim = onDark ? C.goldSoft : C.gold;
@@ -206,7 +261,7 @@ function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3 group">
-          <Monogram size={36} />
+          <PortraitPhoto size={40} />
           <div className="leading-tight">
             <p className="text-white font-playfair text-lg tracking-wide">Tania Guity</p>
             <p className="eyebrow" style={{ color: C.skyMid, fontSize: 9 }}>Notary &middot; Loan Signing &middot; Apostille</p>
@@ -275,120 +330,119 @@ function Navbar() {
   );
 }
 
-/* ─── Portrait Visual — thin gold rim, blue-watercolor disc, like the card ─ */
+/* ─── Portrait Visual — Tania's photo on a watercolor field, like the card ─ */
 function PortraitVisual() {
+  const [errored, setErrored] = useState(false);
+
   return (
-    <div className="relative w-full max-w-[460px] aspect-square mx-auto">
-      {/* Ice-white watercolor blob — top-left of circle */}
-      <div
-        aria-hidden
-        className="absolute -top-12 -left-12 w-[72%] h-[72%] rounded-full pointer-events-none"
-        style={{
-          background: `radial-gradient(circle, ${C.ice} 0%, ${C.powder} 35%, ${C.skyMid} 70%, transparent 90%)`,
-          filter: "blur(44px)",
-          opacity: 0.85,
-          mixBlendMode: "screen",
-        }}
-      />
-      {/* Cerulean wash — bottom-right */}
-      <div
-        aria-hidden
-        className="absolute -bottom-10 -right-8 w-[65%] h-[65%] rounded-full pointer-events-none"
-        style={{
-          background: `radial-gradient(circle, ${C.sky} 0%, ${C.cerulean} 45%, ${C.royal} 80%, transparent 95%)`,
-          filter: "blur(40px)",
-          opacity: 0.85,
-          mixBlendMode: "screen",
-        }}
-      />
-      {/* Sky band — left middle */}
-      <div
-        aria-hidden
-        className="absolute top-1/3 -left-6 w-[40%] h-[45%] rounded-full pointer-events-none"
-        style={{
-          background: `radial-gradient(circle, ${C.skyMid}, ${C.sky} 55%, transparent 85%)`,
-          filter: "blur(34px)",
-          opacity: 0.7,
-          mixBlendMode: "screen",
-        }}
-      />
-
-      {/* A few scattered sparkles — mostly powder-blue with two tiny gold dots */}
-      <div className="absolute top-5 right-14 w-1.5 h-1.5 rounded-full" style={{ background: C.powder, opacity: 0.9 }} />
-      <div className="absolute top-24 right-3 w-1 h-1 rounded-full" style={{ background: C.skyPale }} />
-      <div className="absolute bottom-12 right-10 w-1.5 h-1.5 rounded-full" style={{ background: C.skyMid }} />
-      <div className="absolute bottom-6 left-20 w-1 h-1 rounded-full" style={{ background: C.powder }} />
-      <div className="absolute top-36 -left-1 w-1 h-1 rounded-full" style={{ background: C.skyMid }} />
-      <div className="absolute top-10 right-8 w-1 h-1 rounded-full" style={{ background: C.gold, opacity: 0.7 }} />
-      <div className="absolute bottom-20 left-10 w-1 h-1 rounded-full" style={{ background: C.goldSoft, opacity: 0.6 }} />
-
-      {/* Thin gold rim — matches the rim on Tania's headshot (1px, restrained) */}
-      <div
-        className="absolute inset-0 rounded-full"
-        style={{
-          background: `conic-gradient(from 140deg, ${C.gold}, ${C.goldSoft} 30%, ${C.gold} 60%, ${C.goldSoft} 100%)`,
-          padding: "1.5px",
-          boxShadow: "0 30px 80px -30px rgba(11,37,91,0.55), 0 0 0 1px rgba(255,255,255,0.05)",
-        }}
-      >
-        <div className="w-full h-full rounded-full" style={{ background: C.ink }} />
-      </div>
-
-      {/* Inner watercolor disc — heavy blue layering */}
-      <div
-        className="absolute rounded-full overflow-hidden"
-        style={{
-          inset: "10px",
-          background: `
-            radial-gradient(circle at 22% 18%, ${C.ice}, transparent 45%),
-            radial-gradient(circle at 18% 30%, ${C.powder}, transparent 50%),
-            radial-gradient(circle at 35% 55%, ${C.skyMid}, transparent 55%),
-            radial-gradient(circle at 70% 78%, ${C.cerulean}, transparent 65%),
-            radial-gradient(circle at 55% 50%, ${C.royal}, ${C.navy} 75%, ${C.ink} 100%)
-          `,
-          boxShadow: "inset 0 0 60px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(217,174,82,0.20)",
-        }}
-      >
-        {/* Powder watercolor sweep inside the disc, top-left */}
+    <div className="relative w-full max-w-[460px] mx-auto">
+      <div className="relative aspect-square">
+        {/* Ice-white watercolor blob — top-left of circle */}
         <div
           aria-hidden
-          className="absolute -top-1/4 -left-1/4 w-[110%] h-[90%] rounded-full"
+          className="absolute -top-12 -left-12 w-[72%] h-[72%] rounded-full pointer-events-none"
           style={{
-            background: `radial-gradient(circle, ${C.ice} 0%, ${C.powder} 25%, ${C.skyMid} 55%, transparent 80%)`,
-            opacity: 0.65,
-            filter: "blur(18px)",
+            background: `radial-gradient(circle, ${C.ice} 0%, ${C.powder} 35%, ${C.skyMid} 70%, transparent 90%)`,
+            filter: "blur(44px)",
+            opacity: 0.85,
+            mixBlendMode: "screen",
+          }}
+        />
+        {/* Cerulean wash — bottom-right */}
+        <div
+          aria-hidden
+          className="absolute -bottom-10 -right-8 w-[65%] h-[65%] rounded-full pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, ${C.sky} 0%, ${C.cerulean} 45%, ${C.royal} 80%, transparent 95%)`,
+            filter: "blur(40px)",
+            opacity: 0.85,
+            mixBlendMode: "screen",
+          }}
+        />
+        {/* Sky band — left middle */}
+        <div
+          aria-hidden
+          className="absolute top-1/3 -left-6 w-[40%] h-[45%] rounded-full pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, ${C.skyMid}, ${C.sky} 55%, transparent 85%)`,
+            filter: "blur(34px)",
+            opacity: 0.7,
             mixBlendMode: "screen",
           }}
         />
 
-        {/* Centered name + monogram + caption */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
-          <svg width="68" height="68" viewBox="0 0 64 64" aria-hidden className="mb-3 opacity-95">
-            <circle cx="32" cy="32" r="30" fill="none" stroke={C.goldSoft} strokeWidth="0.8" />
-            <circle cx="32" cy="32" r="26" fill="none" stroke={C.gold} strokeWidth="0.4" opacity="0.5" />
-            <text
-              x="50%" y="56%"
-              textAnchor="middle"
-              fill={C.goldSoft}
-              fontFamily="Playfair Display, Georgia, serif"
-              fontSize="22"
-              fontWeight="500"
-              letterSpacing="2"
-            >TG</text>
-          </svg>
-          <p className="font-playfair text-white text-3xl leading-tight mb-2">Tania Guity</p>
-          <div
-            className="w-12 h-px mb-3"
-            style={{ background: `linear-gradient(to right, transparent, ${C.skyMid}, ${C.goldSoft}, ${C.skyMid}, transparent)` }}
-          />
-          <p className="eyebrow" style={{ color: C.skyMid, fontSize: 9 }}>
-            Mass. Notary &middot; Est. 2020
-          </p>
-          <p className="font-playfair italic text-white/75 text-[13px] mt-4 leading-snug">
-            &ldquo;Discretion, precision,
-            <br /> and a steady hand.&rdquo;
-          </p>
+        {/* Floating sparkles around the rim */}
+        <div className="absolute top-5 right-14 w-1.5 h-1.5 rounded-full" style={{ background: C.powder, opacity: 0.9 }} />
+        <div className="absolute top-24 right-3 w-1 h-1 rounded-full" style={{ background: C.skyPale }} />
+        <div className="absolute bottom-12 right-10 w-1.5 h-1.5 rounded-full" style={{ background: C.skyMid }} />
+        <div className="absolute bottom-6 left-20 w-1 h-1 rounded-full" style={{ background: C.powder }} />
+        <div className="absolute top-36 -left-1 w-1 h-1 rounded-full" style={{ background: C.skyMid }} />
+        <div className="absolute top-10 right-8 w-1 h-1 rounded-full" style={{ background: C.gold, opacity: 0.7 }} />
+        <div className="absolute bottom-20 left-10 w-1 h-1 rounded-full" style={{ background: C.goldSoft, opacity: 0.6 }} />
+
+        {/* Thin gold rim — matches the rim on Tania's headshot on the card */}
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: `conic-gradient(from 140deg, ${C.gold}, ${C.goldSoft} 30%, ${C.gold} 60%, ${C.goldSoft} 100%)`,
+            padding: "2px",
+            boxShadow: "0 30px 80px -30px rgba(11,37,91,0.55), 0 0 0 1px rgba(255,255,255,0.05)",
+          }}
+        >
+          <div className="w-full h-full rounded-full" style={{ background: C.ink }} />
         </div>
+
+        {/* Photo (or watercolor + monogram fallback if file isn't present) */}
+        <div
+          className="absolute rounded-full overflow-hidden"
+          style={{
+            inset: "10px",
+            boxShadow: "inset 0 0 60px rgba(0,0,0,0.30), inset 0 0 0 1px rgba(217,174,82,0.25)",
+            background: errored
+              ? `radial-gradient(circle at 22% 18%, ${C.ice}, transparent 45%),
+                 radial-gradient(circle at 70% 78%, ${C.cerulean}, transparent 65%),
+                 radial-gradient(circle at 55% 50%, ${C.royal}, ${C.navy} 75%, ${C.ink} 100%)`
+              : C.ink,
+          }}
+        >
+          {!errored && (
+            <Image
+              src={PHOTO_SRC}
+              alt="Tania Guity, notary public"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 460px"
+              onError={() => setErrored(true)}
+              style={{ objectFit: "cover", objectPosition: "center 22%" }}
+            />
+          )}
+          {errored && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+              <svg width="76" height="76" viewBox="0 0 64 64" aria-hidden className="mb-3">
+                <circle cx="32" cy="32" r="30" fill="none" stroke={C.goldSoft} strokeWidth="0.8" />
+                <circle cx="32" cy="32" r="26" fill="none" stroke={C.gold} strokeWidth="0.4" opacity="0.5" />
+                <text x="50%" y="56%" textAnchor="middle" fill={C.goldSoft}
+                  fontFamily="Playfair Display, Georgia, serif" fontSize="22" fontWeight="500" letterSpacing="2">TG</text>
+              </svg>
+              <p className="font-playfair text-white text-2xl leading-tight">Tania Guity</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Caption strip below the disc */}
+      <div className="mt-8 text-center">
+        <div
+          className="mx-auto mb-4 w-20 h-px"
+          style={{ background: `linear-gradient(to right, transparent, ${C.skyMid}, ${C.goldSoft}, ${C.skyMid}, transparent)` }}
+        />
+        <p className="font-playfair text-white text-[28px] leading-tight">Tania Guity</p>
+        <p className="eyebrow mt-3" style={{ color: C.skyMid, fontSize: 10 }}>
+          Mass. Notary &middot; Est. 2020
+        </p>
+        <p className="font-playfair italic text-white/70 text-[14px] mt-4 leading-snug max-w-xs mx-auto">
+          &ldquo;Discretion, precision, and a steady hand.&rdquo;
+        </p>
       </div>
     </div>
   );
@@ -1161,7 +1215,7 @@ function Footer() {
         <div className="grid md:grid-cols-12 gap-10 mb-12">
           <div className="md:col-span-5">
             <div className="flex items-center gap-4 mb-5">
-              <Monogram size={48} />
+              <PortraitPhoto size={52} />
               <div>
                 <p className="font-playfair text-white text-2xl">Tania Guity</p>
                 <p className="eyebrow mt-1" style={{ color: C.skyMid, fontSize: 10 }}>
