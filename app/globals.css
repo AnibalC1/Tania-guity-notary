@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --royal: #1B3A8A;
+  --royal-dark: #0F2460;
+  --royal-light: #2952C4;
+  --sky: #6BA3D6;
+  --sky-light: #B8D4EE;
+  --gold: #C8993A;
+  --gold-light: #E8C06A;
+  --white: #FFFFFF;
+  --navy-text: #0F1E4A;
+  --gray: #F4F7FB;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  color: var(--navy-text);
+  background: var(--white);
+}
+
+.font-playfair { font-family: var(--font-playfair), Georgia, serif; }
+.font-inter { font-family: var(--font-inter), system-ui, sans-serif; }
+
+/* Gradient helpers */
+.gradient-royal {
+  background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal) 50%, var(--royal-light) 100%);
+}
+.gradient-text {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass card */
+.glass {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Lift animation */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 64px rgba(27,58,138,0.18);
+}
+
+/* Gold dot decorative pattern */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(200,153,58,0.25) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Watercolor blob shapes */
+.blob {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--gray); }
+::-webkit-scrollbar-thumb { background: var(--royal); border-radius: 3px; }
+
+/* Mobile call button pulse */
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,153,58,0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(200,153,58,0); }
+}
+.pulse-gold { animation: pulse-gold 2s infinite; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.float { animation: float 4s ease-in-out infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.7s ease forwards; }
