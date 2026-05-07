@@ -30,9 +30,12 @@ const C = {
   navy: "#0E2657",
   royal: "#1A3D8F",
   royalSoft: "#2A56B4",
-  sky: "#6B9FD9",
-  skySoft: "#C2D8EF",
-  mist: "#F4F6FB",
+  cerulean: "#3F86C9",
+  sky: "#6BA8E0",
+  skyMid: "#9BC5EC",
+  skySoft: "#C8DEF2",
+  skyPale: "#E4EEF8",
+  mist: "#F4F7FB",
   paper: "#FBFCFE",
   gold: "#B8862B",
   goldSoft: "#D9AE52",
@@ -118,7 +121,12 @@ function Stars({ n }: { n: number }) {
 function Eyebrow({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
   return (
     <p className="eyebrow mb-4 inline-flex items-center gap-3" style={{ color: light ? C.goldSoft : C.gold }}>
-      <span className="inline-block w-8 h-px" style={{ background: light ? C.goldSoft : C.gold }} />
+      <span
+        className="inline-block w-10 h-px"
+        style={{
+          background: `linear-gradient(to right, ${light ? C.skyMid : C.cerulean}, ${light ? C.goldSoft : C.gold})`,
+        }}
+      />
       {children}
     </p>
   );
@@ -254,19 +262,29 @@ function Navbar() {
 /* ─── Hero ──────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <header className="relative min-h-screen flex items-center overflow-hidden marble grain">
-      {/* Constellation of gold dots — corners only, sparse */}
-      <div className="absolute top-24 right-12 w-48 h-48 dots opacity-50 pointer-events-none" />
-      <div className="absolute bottom-16 left-8 w-40 h-40 dots opacity-40 pointer-events-none" />
+    <header className="relative min-h-screen flex items-center overflow-hidden watercolor grain">
+      {/* Sky dots, top-left (echoing the watercolor splashes on the card) */}
+      <div className="absolute top-32 left-10 w-40 h-40 dots-sky opacity-60 pointer-events-none" />
+      {/* Gold dots, complementing on the opposite side */}
+      <div className="absolute top-24 right-12 w-48 h-48 dots opacity-55 pointer-events-none" />
+      <div className="absolute bottom-16 left-1/4 w-36 h-36 dots opacity-35 pointer-events-none" />
 
-      {/* Floating gold accent */}
+      {/* Floating sky-blue glow — left side, lively wash */}
       <motion.div
         aria-hidden
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1.5 }}
-        className="absolute -top-24 -right-32 w-[34rem] h-[34rem] rounded-full pointer-events-none drift"
-        style={{ background: `radial-gradient(circle, rgba(184,134,43,0.18) 0%, transparent 60%)` }}
+        transition={{ duration: 1.6 }}
+        className="absolute -top-32 -left-40 w-[38rem] h-[38rem] rounded-full pointer-events-none drift glow-sky"
+      />
+      {/* Floating gold accent — right side */}
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.6, delay: 0.2 }}
+        className="absolute -bottom-24 -right-24 w-[30rem] h-[30rem] rounded-full pointer-events-none drift glow-gold"
+        style={{ animationDelay: "3s" }}
       />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 w-full pt-24 pb-16">
@@ -339,11 +357,13 @@ function Hero() {
             <div
               className="relative rounded-sm p-10 backdrop-blur-md overflow-hidden"
               style={{
-                background: "linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))",
+                background: "linear-gradient(160deg, rgba(155,197,236,0.10), rgba(255,255,255,0.02))",
                 border: "1px solid rgba(217,174,82,0.25)",
                 boxShadow: "0 30px 90px -40px rgba(0,0,0,0.5)",
               }}
             >
+              {/* Decorative sky-to-gold ribbon at the top edge */}
+              <div className="ribbon absolute top-0 left-8 right-8" />
               <div className="flex items-start justify-between mb-8">
                 <Monogram size={56} />
                 <div className="text-right">
@@ -417,44 +437,56 @@ function Services() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1, duration: 0.6 }}
-            className="card-lift p-9 rounded-sm relative bg-white"
+            className="card-lift p-9 rounded-sm relative bg-white overflow-hidden"
             style={{ border: "1px solid rgba(14,38,87,0.10)" }}
           >
+            {/* Subtle watercolor wash in the upper-right corner */}
             <div
-              className="w-14 h-14 rounded-full flex items-center justify-center mb-7"
-              style={{ background: "rgba(184,134,43,0.08)", border: `1px solid ${C.gold}` }}
-            >
-              <s.Icon size={22} strokeWidth={1.4} style={{ color: C.gold }} />
-            </div>
+              aria-hidden
+              className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none"
+              style={{ background: `radial-gradient(circle, ${i % 2 === 0 ? "rgba(155,197,236,0.35)" : "rgba(242,225,176,0.30)"} 0%, transparent 70%)` }}
+            />
 
-            <h3 className="font-playfair text-2xl mb-2" style={{ color: C.ink }}>{s.title}</h3>
-            <p className="font-playfair italic text-[14px] mb-5" style={{ color: C.gold }}>
-              {s.tagline}
-            </p>
+            <div className="relative z-10">
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center mb-7"
+                style={{
+                  background: `linear-gradient(160deg, rgba(155,197,236,0.18), rgba(184,134,43,0.10))`,
+                  border: `1px solid ${C.gold}`,
+                }}
+              >
+                <s.Icon size={22} strokeWidth={1.4} style={{ color: C.gold }} />
+              </div>
 
-            <p className="text-[14px] leading-[1.75] mb-6" style={{ color: "#4A5675" }}>
-              {s.desc}
-            </p>
+              <h3 className="font-playfair text-2xl mb-2" style={{ color: C.ink }}>{s.title}</h3>
+              <p className="font-playfair italic text-[14px] mb-5" style={{ color: C.gold }}>
+                {s.tagline}
+              </p>
 
-            <div className="hairline-cool mb-5" />
+              <p className="text-[14px] leading-[1.75] mb-6" style={{ color: "#4A5675" }}>
+                {s.desc}
+              </p>
 
-            <p className="eyebrow mb-3" style={{ color: C.royal }}>What to bring</p>
-            <ul className="space-y-2.5 mb-7">
-              {s.docs.map((d) => (
-                <li key={d} className="flex items-start gap-2.5 text-[13px] leading-[1.6]" style={{ color: "#4A5675" }}>
-                  <Check size={14} strokeWidth={2} className="mt-0.5 shrink-0" style={{ color: C.gold }} />
-                  {d}
-                </li>
-              ))}
-            </ul>
+              <div className="hairline-cool mb-5" />
 
-            <div className="flex items-center justify-between pt-5" style={{ borderTop: "1px solid rgba(14,38,87,0.08)" }}>
-              <span className="text-[12px] font-semibold tracking-wider uppercase" style={{ color: C.ink }}>
-                {s.price}
-              </span>
-              <a href="#contact" className="text-[12px] font-semibold uppercase tracking-wider gold-underline" style={{ color: C.gold }}>
-                Book
-              </a>
+              <p className="eyebrow mb-3" style={{ color: C.royal }}>What to bring</p>
+              <ul className="space-y-2.5 mb-7">
+                {s.docs.map((d) => (
+                  <li key={d} className="flex items-start gap-2.5 text-[13px] leading-[1.6]" style={{ color: "#4A5675" }}>
+                    <Check size={14} strokeWidth={2} className="mt-0.5 shrink-0" style={{ color: C.gold }} />
+                    {d}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex items-center justify-between pt-5" style={{ borderTop: "1px solid rgba(14,38,87,0.08)" }}>
+                <span className="text-[12px] font-semibold tracking-wider uppercase" style={{ color: C.ink }}>
+                  {s.price}
+                </span>
+                <a href="#contact" className="text-[12px] font-semibold uppercase tracking-wider gold-underline" style={{ color: C.gold }}>
+                  Book
+                </a>
+              </div>
             </div>
           </motion.article>
         ))}
@@ -488,7 +520,13 @@ function HowItWorks() {
       </motion.div>
 
       <div className="grid md:grid-cols-3 gap-12 md:gap-6 relative">
-        <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-px" style={{ background: `linear-gradient(to right, ${C.goldSoft}, ${C.skySoft}, ${C.goldSoft})` }} />
+        <div
+          className="hidden md:block absolute top-12 left-[16%] right-[16%] h-px"
+          style={{
+            background: `linear-gradient(to right, ${C.cerulean} 0%, ${C.goldSoft} 50%, ${C.cerulean} 100%)`,
+            opacity: 0.55,
+          }}
+        />
 
         {steps.map((s, i) => (
           <motion.div
@@ -499,7 +537,13 @@ function HowItWorks() {
             transition={{ delay: i * 0.15, duration: 0.6 }}
             className="relative"
           >
-            <div className="relative z-10 mx-auto w-24 h-24 rounded-full flex items-center justify-center bg-white" style={{ border: `1px solid ${C.gold}`, boxShadow: "0 16px 40px -20px rgba(8,21,61,0.25)" }}>
+            <div
+              className="relative z-10 mx-auto w-24 h-24 rounded-full flex items-center justify-center bg-white"
+              style={{
+                border: `1px solid ${C.gold}`,
+                boxShadow: `0 16px 40px -20px rgba(63,134,201,0.45), 0 0 0 6px rgba(155,197,236,0.18)`,
+              }}
+            >
               <s.Icon size={26} strokeWidth={1.3} style={{ color: C.royal }} />
             </div>
 
@@ -673,7 +717,11 @@ function Testimonials() {
               </div>
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center font-playfair text-[13px]"
-                style={{ background: "rgba(217,174,82,0.15)", color: C.goldSoft, border: `1px solid ${C.gold}` }}
+                style={
+                  i === 1
+                    ? { background: "rgba(155,197,236,0.18)", color: C.skyMid, border: `1px solid ${C.cerulean}` }
+                    : { background: "rgba(217,174,82,0.15)", color: C.goldSoft, border: `1px solid ${C.gold}` }
+                }
                 aria-hidden
               >
                 {t.name.split(" ").map(s => s[0]).join("")}
