@@ -117,9 +117,9 @@ function Stars({ n }: { n: number }) {
 }
 
 /* ─── Component: Section wrapper ───────────────────────────── */
-function Section({ children, className = "", id = "" }: { children: React.ReactNode; className?: string; id?: string }) {
+function Section({ children, className = "", id = "", style }: { children: React.ReactNode; className?: string; id?: string; style?: React.CSSProperties }) {
   return (
-    <section id={id} className={`py-20 px-4 ${className}`}>
+    <section id={id} className={`py-20 px-4 ${className}`} style={style}>
       <div className="max-w-6xl mx-auto">{children}</div>
     </section>
   );
@@ -229,7 +229,7 @@ function Hero() {
 
       {/* Watercolor blob */}
       <motion.div
-        style={{ y, background: `radial-gradient(circle, ${C.sky} 0%, transparent 70%)` } as any}
+        style={{ background: `radial-gradient(circle, ${C.sky} 0%, transparent 70%)` } as any}
         className="absolute -top-32 -right-32 w-96 h-96 blob opacity-20"
         animate={{ borderRadius: ["60% 40% 30% 70%/60% 30% 70% 40%", "30% 60% 70% 40%/50% 60% 30% 60%", "60% 40% 30% 70%/60% 30% 70% 40%"] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
