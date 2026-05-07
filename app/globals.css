@@ -1,33 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  /* Deep, editorial navy palette pulled from the business card */
-  --ink: #08153D;
-  --navy: #0E2657;
-  --royal: #1A3D8F;
-  --royal-soft: #2A56B4;
+  /* ── Eight-step blue ramp — the watercolor on the card, layered top to bottom ── */
+  --ice:        #F4FAFF;
+  --powder:     #D6E8F7;
+  --sky-pale:   #BBD8EE;
+  --sky-mid:    #8FBBE3;
+  --sky:        #5C9DD6;
+  --cerulean:   #2F7AC4;
+  --royal-soft: #1F58B0;
+  --royal:      #143F8C;
+  --navy:       #0B255B;
+  --ink:        #06112F;
 
-  /* Lively cool blues — the watercolor wash on the card */
-  --cerulean: #3F86C9;
-  --sky: #6BA8E0;
-  --sky-mid: #9BC5EC;
-  --sky-soft: #C8DEF2;
-  --sky-pale: #E4EEF8;
-
-  --mist: #F4F7FB;
+  --mist:  #F4F7FB;
   --paper: #FBFCFE;
 
-  /* Warm, restrained gold — closer to brushed brass than yellow */
-  --gold: #B8862B;
+  /* Gold — used sparingly: rim, name, dot sparkles only */
+  --gold:      #B8862B;
   --gold-soft: #D9AE52;
   --gold-pale: #F2E1B0;
 
-  --line: rgba(184, 134, 43, 0.28);
-  --line-cool: rgba(14, 38, 87, 0.08);
-  --line-sky: rgba(107, 168, 224, 0.35);
+  --line:      rgba(20, 63, 140, 0.25);
+  --line-cool: rgba(11, 37, 91, 0.08);
+  --line-sky:  rgba(143, 187, 227, 0.45);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* Box-sizing reset only — margin/padding are reset by Tailwind's preflight,
+   and a `* { margin: 0 }` rule fights utility classes like `mx-auto`.       */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
 
 html {
   scroll-behavior: smooth;
@@ -41,6 +48,7 @@ body {
   background: var(--paper);
   font-feature-settings: "ss01", "cv11";
   letter-spacing: -0.005em;
+  overflow-x: hidden;
 }
 
 ::selection { background: var(--gold-pale); color: var(--ink); }
@@ -70,56 +78,65 @@ body {
   background: linear-gradient(to right, transparent, var(--line-sky) 20%, var(--line-sky) 80%, transparent);
 }
 
-/* Sky-tinted gold ribbon — used as a thin section accent */
+/* Section accent ribbon — full blue ramp with a single gold dot of light at center */
 .ribbon {
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--cerulean) 18%, var(--gold-soft) 50%, var(--sky) 82%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, var(--sky-mid) 14%, var(--cerulean) 32%, var(--gold-soft) 50%, var(--cerulean) 68%, var(--sky-mid) 86%, transparent 100%);
   border-radius: 2px;
 }
 
-/* Marble / watercolor backdrop — layered radials echoing the card's blue washes */
+/* ── Watercolor backdrops — blue-forward, multi-tonal, layered with `screen`
+      so the cool palette is visible against deep navy.                     */
+
 .marble {
   background-color: var(--ink);
   background-image:
-    /* Pale aqua spotlight, top-left */
-    radial-gradient(55% 45% at 6% 14%, rgba(200, 222, 242, 0.32) 0%, rgba(155, 197, 236, 0.18) 32%, transparent 62%),
-    /* Cerulean wash sweeping lower-left */
-    radial-gradient(60% 55% at 22% 78%, rgba(107, 168, 224, 0.32) 0%, rgba(63, 134, 201, 0.16) 40%, transparent 70%),
-    /* Soft sky highlight, mid-upper */
-    radial-gradient(35% 40% at 48% 22%, rgba(107, 168, 224, 0.18) 0%, transparent 65%),
-    /* Gold splash bottom-right (echoing card sparkle) */
-    radial-gradient(40% 50% at 92% 82%, rgba(217, 174, 82, 0.22) 0%, transparent 65%),
-    /* Pale gold sparkle top-right */
-    radial-gradient(22% 30% at 88% 16%, rgba(242, 225, 176, 0.14) 0%, transparent 70%),
-    /* Royal foundation, deepening to ink at the edges */
-    radial-gradient(95% 95% at 55% 55%, rgba(42, 86, 180, 0.55) 0%, var(--ink) 80%);
+    /* Ice-white spotlight, top-left */
+    radial-gradient(55% 55% at 6% 12%, rgba(244, 250, 255, 0.95), rgba(214, 232, 247, 0.55) 35%, transparent 70%),
+    /* Powder-blue, mid-left */
+    radial-gradient(45% 50% at 16% 50%, rgba(187, 216, 238, 0.75), rgba(143, 187, 227, 0.45) 40%, transparent 75%),
+    /* Sky band, lower-left */
+    radial-gradient(55% 60% at 22% 82%, rgba(92, 157, 214, 0.85), rgba(47, 122, 196, 0.55) 45%, transparent 75%),
+    /* Cerulean tail, bottom-mid */
+    radial-gradient(35% 35% at 50% 95%, rgba(31, 88, 176, 0.65), transparent 75%),
+    /* Mid sky highlight */
+    radial-gradient(35% 40% at 55% 25%, rgba(143, 187, 227, 0.50), transparent 70%),
+    /* Royal-blue depth, right */
+    radial-gradient(100% 95% at 70% 55%, rgba(20, 63, 140, 0.55), transparent 78%);
+  background-blend-mode: screen, screen, screen, screen, screen, normal;
 }
 
-/* Stronger watercolor variant for hero — even more contrast between sky and ink */
 .watercolor {
   background-color: var(--ink);
   background-image:
-    /* Bright sky wash, top-left torn edge */
-    radial-gradient(70% 65% at 0% 20%, rgba(228, 238, 248, 0.4) 0%, rgba(155, 197, 236, 0.28) 20%, rgba(107, 168, 224, 0.18) 42%, transparent 70%),
-    /* Cerulean lower-left ribbon */
-    radial-gradient(55% 60% at 18% 88%, rgba(63, 134, 201, 0.42) 0%, rgba(26, 61, 143, 0.25) 45%, transparent 75%),
-    /* Mid sky band */
-    radial-gradient(40% 35% at 38% 50%, rgba(107, 168, 224, 0.22) 0%, transparent 65%),
-    /* Gold sparkle, right edge */
-    radial-gradient(35% 50% at 96% 78%, rgba(217, 174, 82, 0.28) 0%, transparent 60%),
-    /* Pale gold dust, top right */
-    radial-gradient(28% 32% at 90% 14%, rgba(242, 225, 176, 0.18) 0%, transparent 65%),
-    /* Deep royal core */
-    radial-gradient(110% 100% at 70% 60%, rgba(42, 86, 180, 0.5) 0%, var(--ink) 78%);
+    /* Ice splash bleeding from the top-left edge */
+    radial-gradient(75% 80% at -10% 8%, rgba(244, 250, 255, 1), rgba(214, 232, 247, 0.95) 14%, rgba(187, 216, 238, 0.70) 30%, rgba(143, 187, 227, 0.45) 50%, transparent 72%),
+    /* Powder-blue body, upper-mid */
+    radial-gradient(55% 50% at 22% 38%, rgba(187, 216, 238, 0.75), rgba(143, 187, 227, 0.50) 45%, transparent 75%),
+    /* Sky ribbon, lower-left */
+    radial-gradient(60% 65% at 16% 86%, rgba(92, 157, 214, 1), rgba(47, 122, 196, 0.65) 38%, transparent 72%),
+    /* Cerulean sweep through the middle */
+    radial-gradient(48% 35% at 42% 60%, rgba(47, 122, 196, 0.65), rgba(31, 88, 176, 0.40) 50%, transparent 75%),
+    /* Mid sky highlight, top-mid */
+    radial-gradient(38% 35% at 45% 15%, rgba(143, 187, 227, 0.55), transparent 70%),
+    /* Gold sparkle accent (small, restrained), right edge */
+    radial-gradient(28% 35% at 95% 70%, rgba(242, 225, 176, 0.40), transparent 70%),
+    /* Royal core */
+    radial-gradient(110% 95% at 75% 55%, rgba(20, 63, 140, 0.50), transparent 80%);
+  background-blend-mode: screen, screen, screen, screen, screen, screen, normal;
 }
 
 .marble-soft {
   background-color: var(--paper);
   background-image:
-    radial-gradient(60% 55% at 90% 8%, rgba(155, 197, 236, 0.45) 0%, rgba(200, 222, 242, 0.25) 35%, transparent 70%),
-    radial-gradient(50% 50% at 6% 92%, rgba(228, 238, 248, 0.7) 0%, rgba(200, 222, 242, 0.35) 40%, transparent 75%),
-    radial-gradient(35% 40% at 78% 88%, rgba(242, 225, 176, 0.32) 0%, transparent 65%),
-    radial-gradient(28% 35% at 14% 18%, rgba(217, 174, 82, 0.12) 0%, transparent 70%);
+    /* Sky wash, top-right */
+    radial-gradient(60% 55% at 92% 6%, rgba(143, 187, 227, 0.55), rgba(187, 216, 238, 0.30) 40%, transparent 75%),
+    /* Powder-blue, bottom-left */
+    radial-gradient(55% 55% at 4% 92%, rgba(214, 232, 247, 0.95), rgba(187, 216, 238, 0.55) 35%, transparent 75%),
+    /* Cerulean accent, mid-right */
+    radial-gradient(30% 35% at 75% 60%, rgba(92, 157, 214, 0.30), transparent 70%),
+    /* Tiny gold dust, top-left */
+    radial-gradient(22% 28% at 16% 18%, rgba(217, 174, 82, 0.10), transparent 70%);
 }
 
 /* Subtle film-grain — keeps gradients from looking flat */
@@ -127,26 +144,36 @@ body {
   content: "";
   position: absolute; inset: 0;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.10;
   mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
 }
 
-/* Constellation of gold dots, echoing the business card */
-.dots {
-  background-image: radial-gradient(circle, rgba(217,174,82,0.35) 1px, transparent 1px);
+/* Sky-blue dot constellation — primary decorative pattern (matching the
+   pale watercolor area of the card)                                       */
+.dots-sky {
+  background-image: radial-gradient(circle, rgba(143, 187, 227, 0.65) 1.25px, transparent 1.25px);
+  background-size: 22px 22px;
+}
+
+/* Powder-blue larger pattern */
+.dots-powder {
+  background-image: radial-gradient(circle, rgba(214, 232, 247, 0.55) 1.5px, transparent 1.5px);
   background-size: 28px 28px;
 }
 
-/* Sky-blue dot constellation — secondary accent */
-.dots-sky {
-  background-image: radial-gradient(circle, rgba(155, 197, 236, 0.45) 1px, transparent 1px);
-  background-size: 24px 24px;
+/* Gold dots — used very sparingly as a small precious sparkle */
+.dots {
+  background-image: radial-gradient(circle, rgba(217, 174, 82, 0.55) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-/* Watercolor sweep — soft cerulean glow used as floating accent */
 .glow-sky {
-  background: radial-gradient(circle, rgba(107, 168, 224, 0.28) 0%, rgba(63, 134, 201, 0.12) 45%, transparent 75%);
+  background: radial-gradient(circle, rgba(92, 157, 214, 0.55) 0%, rgba(47, 122, 196, 0.30) 45%, transparent 75%);
+  filter: blur(8px);
+}
+.glow-powder {
+  background: radial-gradient(circle, rgba(214, 232, 247, 0.65) 0%, rgba(143, 187, 227, 0.30) 50%, transparent 80%);
   filter: blur(8px);
 }
 .glow-gold {
@@ -200,7 +227,20 @@ body {
   box-shadow: 0 24px 60px -28px rgba(8,21,61,0.35);
 }
 
-/* Animated gold underline — appears on hover */
+/* Animated underline on hover — cerulean primary, gold reserved for emphasis */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -4px;
+  height: 1px; width: 0;
+  background: var(--cerulean);
+  transition: width 320ms ease;
+}
+.link-underline:hover::after { width: 100%; }
+
 .gold-underline {
   position: relative;
 }

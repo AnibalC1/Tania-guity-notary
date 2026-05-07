@@ -24,22 +24,26 @@ import {
   X,
 } from "lucide-react";
 
-/* ─── Brand palette (mirrors :root in globals.css) ───────────── */
+/* ─── Brand palette ──────────────────────────────────────────────
+   Eight-step blue ramp + restrained gold accents. Blue carries the
+   brand; gold appears only as: thin portrait rim, primary CTA fill,
+   the word "refined", and a few sparkle dots.                      */
 const C = {
-  ink: "#08153D",
-  navy: "#0E2657",
-  royal: "#1A3D8F",
-  royalSoft: "#2A56B4",
-  cerulean: "#3F86C9",
-  sky: "#6BA8E0",
-  skyMid: "#9BC5EC",
-  skySoft: "#C8DEF2",
-  skyPale: "#E4EEF8",
-  mist: "#F4F7FB",
-  paper: "#FBFCFE",
-  gold: "#B8862B",
-  goldSoft: "#D9AE52",
-  goldPale: "#F2E1B0",
+  ice:       "#F4FAFF",
+  powder:    "#D6E8F7",
+  skyPale:   "#BBD8EE",
+  skyMid:    "#8FBBE3",
+  sky:       "#5C9DD6",
+  cerulean:  "#2F7AC4",
+  royalSoft: "#1F58B0",
+  royal:     "#143F8C",
+  navy:      "#0B255B",
+  ink:       "#06112F",
+  mist:      "#F4F7FB",
+  paper:     "#FBFCFE",
+  gold:      "#B8862B",
+  goldSoft:  "#D9AE52",
+  goldPale:  "#F2E1B0",
 };
 
 /* ─── Content ────────────────────────────────────────────────── */
@@ -120,11 +124,13 @@ function Stars({ n }: { n: number }) {
 
 function Eyebrow({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
   return (
-    <p className="eyebrow mb-4 inline-flex items-center gap-3" style={{ color: light ? C.goldSoft : C.gold }}>
+    <p className="eyebrow mb-4 inline-flex items-center gap-3" style={{ color: light ? C.skyMid : C.cerulean }}>
       <span
         className="inline-block w-10 h-px"
         style={{
-          background: `linear-gradient(to right, ${light ? C.skyMid : C.cerulean}, ${light ? C.goldSoft : C.gold})`,
+          background: light
+            ? `linear-gradient(to right, ${C.powder}, ${C.skyMid}, ${C.sky})`
+            : `linear-gradient(to right, ${C.skyMid}, ${C.cerulean}, ${C.royal})`,
         }}
       />
       {children}
@@ -140,16 +146,26 @@ function Section({ children, className = "", id = "", style }: { children: React
   );
 }
 
-/* Monogram mark — used in nav, footer, hero */
-function Monogram({ size = 40 }: { size?: number }) {
+/* Monogram mark — thin gold rim on a watercolor disc, like the headshot frame */
+function Monogram({ size = 40, onDark = true }: { size?: number; onDark?: boolean }) {
+  const rim = onDark ? C.goldSoft : C.gold;
+  const fill = onDark ? C.goldSoft : C.royal;
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden>
-      <circle cx="32" cy="32" r="30" fill="none" stroke={C.goldSoft} strokeWidth="1" />
-      <circle cx="32" cy="32" r="26" fill="none" stroke={C.gold} strokeWidth="0.5" opacity="0.5" />
+      <defs>
+        <radialGradient id="mono-bg" cx="35%" cy="30%" r="80%">
+          <stop offset="0%" stopColor={onDark ? C.skyMid : C.powder} stopOpacity="0.35" />
+          <stop offset="60%" stopColor={onDark ? C.cerulean : C.skyPale} stopOpacity="0.20" />
+          <stop offset="100%" stopColor={onDark ? C.ink : "transparent"} stopOpacity={onDark ? 0.85 : 0} />
+        </radialGradient>
+      </defs>
+      <circle cx="32" cy="32" r="29" fill="url(#mono-bg)" />
+      <circle cx="32" cy="32" r="30" fill="none" stroke={rim} strokeWidth="0.8" />
+      <circle cx="32" cy="32" r="27" fill="none" stroke={rim} strokeWidth="0.4" opacity="0.4" />
       <text
         x="50%" y="56%"
         textAnchor="middle"
-        fill={C.goldSoft}
+        fill={fill}
         fontFamily="Playfair Display, Georgia, serif"
         fontSize="22"
         fontWeight="500"
@@ -193,7 +209,7 @@ function Navbar() {
           <Monogram size={36} />
           <div className="leading-tight">
             <p className="text-white font-playfair text-lg tracking-wide">Tania Guity</p>
-            <p className="eyebrow" style={{ color: C.goldSoft, fontSize: 9 }}>Notary · Loan Signing · Apostille</p>
+            <p className="eyebrow" style={{ color: C.skyMid, fontSize: 9 }}>Notary &middot; Loan Signing &middot; Apostille</p>
           </div>
         </a>
 
@@ -202,7 +218,7 @@ function Navbar() {
             <a
               key={l.label}
               href={l.href}
-              className="text-white/75 hover:text-white text-[13px] font-medium tracking-wide transition-colors gold-underline"
+              className="text-white/75 hover:text-white text-[13px] font-medium tracking-wide transition-colors link-underline"
             >
               {l.label}
             </a>
@@ -259,149 +275,285 @@ function Navbar() {
   );
 }
 
+/* ─── Portrait Visual — thin gold rim, blue-watercolor disc, like the card ─ */
+function PortraitVisual() {
+  return (
+    <div className="relative w-full max-w-[460px] aspect-square mx-auto">
+      {/* Ice-white watercolor blob — top-left of circle */}
+      <div
+        aria-hidden
+        className="absolute -top-12 -left-12 w-[72%] h-[72%] rounded-full pointer-events-none"
+        style={{
+          background: `radial-gradient(circle, ${C.ice} 0%, ${C.powder} 35%, ${C.skyMid} 70%, transparent 90%)`,
+          filter: "blur(44px)",
+          opacity: 0.85,
+          mixBlendMode: "screen",
+        }}
+      />
+      {/* Cerulean wash — bottom-right */}
+      <div
+        aria-hidden
+        className="absolute -bottom-10 -right-8 w-[65%] h-[65%] rounded-full pointer-events-none"
+        style={{
+          background: `radial-gradient(circle, ${C.sky} 0%, ${C.cerulean} 45%, ${C.royal} 80%, transparent 95%)`,
+          filter: "blur(40px)",
+          opacity: 0.85,
+          mixBlendMode: "screen",
+        }}
+      />
+      {/* Sky band — left middle */}
+      <div
+        aria-hidden
+        className="absolute top-1/3 -left-6 w-[40%] h-[45%] rounded-full pointer-events-none"
+        style={{
+          background: `radial-gradient(circle, ${C.skyMid}, ${C.sky} 55%, transparent 85%)`,
+          filter: "blur(34px)",
+          opacity: 0.7,
+          mixBlendMode: "screen",
+        }}
+      />
+
+      {/* A few scattered sparkles — mostly powder-blue with two tiny gold dots */}
+      <div className="absolute top-5 right-14 w-1.5 h-1.5 rounded-full" style={{ background: C.powder, opacity: 0.9 }} />
+      <div className="absolute top-24 right-3 w-1 h-1 rounded-full" style={{ background: C.skyPale }} />
+      <div className="absolute bottom-12 right-10 w-1.5 h-1.5 rounded-full" style={{ background: C.skyMid }} />
+      <div className="absolute bottom-6 left-20 w-1 h-1 rounded-full" style={{ background: C.powder }} />
+      <div className="absolute top-36 -left-1 w-1 h-1 rounded-full" style={{ background: C.skyMid }} />
+      <div className="absolute top-10 right-8 w-1 h-1 rounded-full" style={{ background: C.gold, opacity: 0.7 }} />
+      <div className="absolute bottom-20 left-10 w-1 h-1 rounded-full" style={{ background: C.goldSoft, opacity: 0.6 }} />
+
+      {/* Thin gold rim — matches the rim on Tania's headshot (1px, restrained) */}
+      <div
+        className="absolute inset-0 rounded-full"
+        style={{
+          background: `conic-gradient(from 140deg, ${C.gold}, ${C.goldSoft} 30%, ${C.gold} 60%, ${C.goldSoft} 100%)`,
+          padding: "1.5px",
+          boxShadow: "0 30px 80px -30px rgba(11,37,91,0.55), 0 0 0 1px rgba(255,255,255,0.05)",
+        }}
+      >
+        <div className="w-full h-full rounded-full" style={{ background: C.ink }} />
+      </div>
+
+      {/* Inner watercolor disc — heavy blue layering */}
+      <div
+        className="absolute rounded-full overflow-hidden"
+        style={{
+          inset: "10px",
+          background: `
+            radial-gradient(circle at 22% 18%, ${C.ice}, transparent 45%),
+            radial-gradient(circle at 18% 30%, ${C.powder}, transparent 50%),
+            radial-gradient(circle at 35% 55%, ${C.skyMid}, transparent 55%),
+            radial-gradient(circle at 70% 78%, ${C.cerulean}, transparent 65%),
+            radial-gradient(circle at 55% 50%, ${C.royal}, ${C.navy} 75%, ${C.ink} 100%)
+          `,
+          boxShadow: "inset 0 0 60px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(217,174,82,0.20)",
+        }}
+      >
+        {/* Powder watercolor sweep inside the disc, top-left */}
+        <div
+          aria-hidden
+          className="absolute -top-1/4 -left-1/4 w-[110%] h-[90%] rounded-full"
+          style={{
+            background: `radial-gradient(circle, ${C.ice} 0%, ${C.powder} 25%, ${C.skyMid} 55%, transparent 80%)`,
+            opacity: 0.65,
+            filter: "blur(18px)",
+            mixBlendMode: "screen",
+          }}
+        />
+
+        {/* Centered name + monogram + caption */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+          <svg width="68" height="68" viewBox="0 0 64 64" aria-hidden className="mb-3 opacity-95">
+            <circle cx="32" cy="32" r="30" fill="none" stroke={C.goldSoft} strokeWidth="0.8" />
+            <circle cx="32" cy="32" r="26" fill="none" stroke={C.gold} strokeWidth="0.4" opacity="0.5" />
+            <text
+              x="50%" y="56%"
+              textAnchor="middle"
+              fill={C.goldSoft}
+              fontFamily="Playfair Display, Georgia, serif"
+              fontSize="22"
+              fontWeight="500"
+              letterSpacing="2"
+            >TG</text>
+          </svg>
+          <p className="font-playfair text-white text-3xl leading-tight mb-2">Tania Guity</p>
+          <div
+            className="w-12 h-px mb-3"
+            style={{ background: `linear-gradient(to right, transparent, ${C.skyMid}, ${C.goldSoft}, ${C.skyMid}, transparent)` }}
+          />
+          <p className="eyebrow" style={{ color: C.skyMid, fontSize: 9 }}>
+            Mass. Notary &middot; Est. 2020
+          </p>
+          <p className="font-playfair italic text-white/75 text-[13px] mt-4 leading-snug">
+            &ldquo;Discretion, precision,
+            <br /> and a steady hand.&rdquo;
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Hero ──────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <header className="relative min-h-screen flex items-center overflow-hidden watercolor grain">
-      {/* Sky dots, top-left (echoing the watercolor splashes on the card) */}
-      <div className="absolute top-32 left-10 w-40 h-40 dots-sky opacity-60 pointer-events-none" />
-      {/* Gold dots, complementing on the opposite side */}
-      <div className="absolute top-24 right-12 w-48 h-48 dots opacity-55 pointer-events-none" />
-      <div className="absolute bottom-16 left-1/4 w-36 h-36 dots opacity-35 pointer-events-none" />
+    <header className="relative min-h-screen overflow-hidden" style={{ background: C.ink }}>
+      {/* ═══ Watercolor backdrop — visible blue & gold blobs blended onto deep navy ═══ */}
 
-      {/* Floating sky-blue glow — left side, lively wash */}
-      <motion.div
+      {/* Pale aqua splash, top-left (largest, brightest — like the card's left edge) */}
+      <div
         aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.6 }}
-        className="absolute -top-32 -left-40 w-[38rem] h-[38rem] rounded-full pointer-events-none drift glow-sky"
+        className="absolute pointer-events-none"
+        style={{
+          top: "-25%", left: "-20%", width: "85%", height: "120%",
+          background: `radial-gradient(ellipse, ${C.skyPale} 0%, ${C.skyMid} 25%, ${C.cerulean} 50%, transparent 72%)`,
+          filter: "blur(60px)",
+          opacity: 0.75,
+          mixBlendMode: "screen",
+        }}
       />
-      {/* Floating gold accent — right side */}
-      <motion.div
+      {/* Cerulean ribbon, lower-left */}
+      <div
         aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.6, delay: 0.2 }}
-        className="absolute -bottom-24 -right-24 w-[30rem] h-[30rem] rounded-full pointer-events-none drift glow-gold"
-        style={{ animationDelay: "3s" }}
+        className="absolute pointer-events-none"
+        style={{
+          bottom: "-25%", left: "-15%", width: "60%", height: "85%",
+          background: `radial-gradient(ellipse, ${C.cerulean} 0%, ${C.royalSoft} 45%, transparent 75%)`,
+          filter: "blur(70px)",
+          opacity: 0.85,
+          mixBlendMode: "screen",
+        }}
+      />
+      {/* Mid sky highlight */}
+      <div
+        aria-hidden
+        className="absolute pointer-events-none"
+        style={{
+          top: "20%", left: "35%", width: "35%", height: "45%",
+          background: `radial-gradient(ellipse, ${C.skyMid} 0%, ${C.cerulean} 50%, transparent 75%)`,
+          filter: "blur(60px)",
+          opacity: 0.45,
+          mixBlendMode: "screen",
+        }}
+      />
+      {/* Royal-blue depth, right side (no gold here — keep gold restrained) */}
+      <div
+        aria-hidden
+        className="absolute pointer-events-none"
+        style={{
+          top: "10%", right: "-12%", width: "50%", height: "60%",
+          background: `radial-gradient(ellipse, ${C.royalSoft} 0%, ${C.royal} 45%, transparent 75%)`,
+          filter: "blur(80px)",
+          opacity: 0.55,
+          mixBlendMode: "screen",
+        }}
+      />
+      {/* Tiny gold sparkle, bottom-right (small, precious) */}
+      <div
+        aria-hidden
+        className="absolute pointer-events-none"
+        style={{
+          bottom: "-8%", right: "-5%", width: "28%", height: "40%",
+          background: `radial-gradient(ellipse, ${C.goldSoft} 0%, ${C.gold} 50%, transparent 75%)`,
+          filter: "blur(70px)",
+          opacity: 0.20,
+          mixBlendMode: "screen",
+        }}
       />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 w-full pt-24 pb-16">
-        <div className="grid lg:grid-cols-12 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9 }}
-            className="lg:col-span-7"
-          >
-            <Eyebrow light>Boston · Brookline · Beyond</Eyebrow>
+      {/* Constellations — sky-blue primary, gold reserved as a small sparkle */}
+      <div className="absolute top-[25%] left-[5%] w-72 h-56 dots-powder opacity-80 pointer-events-none" />
+      <div className="absolute top-[58%] left-[22%] w-48 h-40 dots-sky opacity-90 pointer-events-none" />
+      <div className="absolute top-[18%] right-[14%] w-44 h-44 dots-sky opacity-50 pointer-events-none" />
+      <div className="absolute bottom-[14%] right-[10%] w-32 h-32 dots opacity-60 pointer-events-none" />
 
-            <h1 className="font-playfair text-white font-medium leading-[1.05] tracking-tight text-[44px] sm:text-[58px] lg:text-[76px]">
-              Notarial services,
-              <br />
-              <span className="italic font-normal" style={{ color: C.goldSoft }}>refined</span> for
-              modern life.
-            </h1>
+      {/* Film grain overlay */}
+      <div className="absolute inset-0 grain pointer-events-none" />
 
-            <div className="flex items-center gap-4 mt-6 mb-8">
-              <span className="w-12 h-px" style={{ background: C.goldSoft }} />
-              <p className="text-white/85 font-playfair italic text-lg">
-                Tania Guity — Notary Public · Loan Signing Agent · Apostille Agent
-              </p>
-            </div>
+      {/* ═══ Centered content layer ═══ */}
+      <div className="relative z-10 min-h-screen flex items-center">
+        <div className="w-full max-w-6xl mx-auto px-6 lg:px-10 pt-28 pb-20">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-14 items-center">
 
-            <p className="text-white/65 text-[15px] leading-[1.8] max-w-xl mb-10">
-              Discreet, exact, and dependable. Mobile appointments at your home,
-              office, or hospital — Monday through Saturday, 8 AM to 8 PM.
-            </p>
-
-            <div className="flex flex-wrap gap-4 mb-12">
-              <a
-                href="#contact"
-                className="btn-gold inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-[12px] font-semibold uppercase"
-              >
-                Book an appointment
-                <ArrowRight size={15} strokeWidth={2} />
-              </a>
-              <a
-                href="tel:6176751974"
-                className="btn-outline inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-[12px] font-semibold uppercase"
-              >
-                <Phone size={14} strokeWidth={2} />
-                617-675-1974
-              </a>
-            </div>
-
-            <div className="flex flex-wrap gap-x-8 gap-y-3">
-              {[
-                { Icon: ShieldCheck, label: "Licensed & Bonded" },
-                { Icon: MapPin, label: "Mobile Service" },
-                { Icon: Clock, label: "Same-Day Available" },
-              ].map(({ Icon, label }) => (
-                <div key={label} className="flex items-center gap-2.5">
-                  <Icon size={15} strokeWidth={1.5} style={{ color: C.goldSoft }} />
-                  <span className="text-white/70 text-[13px] tracking-wide">{label}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Editorial credential card */}
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.15 }}
-            className="lg:col-span-5 hidden lg:block"
-          >
-            <div
-              className="relative rounded-sm p-10 backdrop-blur-md overflow-hidden"
-              style={{
-                background: "linear-gradient(160deg, rgba(155,197,236,0.10), rgba(255,255,255,0.02))",
-                border: "1px solid rgba(217,174,82,0.25)",
-                boxShadow: "0 30px 90px -40px rgba(0,0,0,0.5)",
-              }}
+            {/* LEFT — copy */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9 }}
+              className="lg:col-span-7"
             >
-              {/* Decorative sky-to-gold ribbon at the top edge */}
-              <div className="ribbon absolute top-0 left-8 right-8" />
-              <div className="flex items-start justify-between mb-8">
-                <Monogram size={56} />
-                <div className="text-right">
-                  <p className="eyebrow" style={{ color: C.goldSoft }}>Est.</p>
-                  <p className="font-playfair text-white text-2xl mt-1">2020</p>
-                </div>
+              <Eyebrow light>Boston &middot; Brookline &middot; Beyond</Eyebrow>
+
+              <h1 className="font-playfair text-white font-medium leading-[1.02] tracking-[-0.02em] text-[44px] sm:text-[60px] lg:text-[80px]">
+                Notarial services,
+                <br />
+                <span className="italic font-normal" style={{ color: C.goldSoft }}>refined</span>{" "}
+                <span className="italic font-normal text-white/95">for modern life.</span>
+              </h1>
+
+              <div className="flex items-center gap-4 mt-7 mb-7">
+                <span
+                  className="w-16 h-px"
+                  style={{ background: `linear-gradient(to right, ${C.skyMid}, ${C.goldSoft})` }}
+                />
+                <p className="text-white/85 font-playfair italic text-[17px] lg:text-[19px]">
+                  Tania Guity &mdash; Notary Public &middot; Loan Signing Agent &middot; Apostille
+                </p>
               </div>
 
-              <p className="eyebrow mb-2" style={{ color: C.goldSoft }}>Why clients choose Tania</p>
-              <h3 className="font-playfair text-white text-2xl leading-snug mb-8">
-                Quiet expertise.
-                <br /> Personal service.
-              </h3>
+              <p className="text-white/70 text-[15px] lg:text-[16px] leading-[1.85] max-w-xl mb-10">
+                Discreet, exact, and dependable. Mobile appointments at your home,
+                office, or hospital &mdash; Monday through Saturday, 8 AM to 8 PM.
+              </p>
 
-              <div className="hairline mb-6" />
+              <div className="flex flex-wrap gap-4 mb-14">
+                <a
+                  href="#contact"
+                  className="btn-gold inline-flex items-center gap-2 px-7 py-4 rounded-full text-[12px] font-semibold uppercase"
+                >
+                  Book an appointment
+                  <ArrowRight size={15} strokeWidth={2} />
+                </a>
+                <a
+                  href="tel:6176751974"
+                  className="btn-outline inline-flex items-center gap-2 px-7 py-4 rounded-full text-[12px] font-semibold uppercase"
+                >
+                  <Phone size={14} strokeWidth={2} />
+                  617-675-1974
+                </a>
+              </div>
 
-              {[
-                { n: "500+", label: "Documents notarized" },
-                { n: "Mon–Sat", label: "8 AM – 8 PM" },
-                { n: "24 hr", label: "Typical turnaround" },
-                { n: "5.0", label: "Client rating" },
-              ].map((s, i) => (
-                <div key={s.label}>
-                  <div className="flex items-baseline justify-between py-3.5">
-                    <span className="font-playfair text-2xl" style={{ color: C.goldSoft }}>{s.n}</span>
-                    <span className="text-white/65 text-[13px] tracking-wide uppercase">{s.label}</span>
+              <div className="flex flex-wrap gap-x-8 gap-y-3">
+                {[
+                  { Icon: ShieldCheck, label: "Licensed & Bonded" },
+                  { Icon: MapPin, label: "Mobile Service" },
+                  { Icon: Clock, label: "Same-Day Available" },
+                ].map(({ Icon, label }) => (
+                  <div key={label} className="flex items-center gap-2.5">
+                    <Icon size={15} strokeWidth={1.5} style={{ color: C.skyMid }} />
+                    <span className="text-white/75 text-[13px] tracking-wide">{label}</span>
                   </div>
-                  {i < 3 && <div className="hairline" />}
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* RIGHT — portrait visual */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.1, delay: 0.2, ease: [0.2, 0.6, 0.2, 1] }}
+              className="lg:col-span-5"
+            >
+              <PortraitVisual />
+            </motion.div>
+          </div>
         </div>
       </div>
 
+      {/* Scroll indicator */}
       <a
         href="#services"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50 hover:text-white transition-colors"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50 hover:text-white transition-colors z-20"
         aria-label="Scroll down"
       >
         <span className="eyebrow" style={{ fontSize: 10 }}>Explore</span>
@@ -425,7 +577,7 @@ function Services() {
         <h2 className="font-playfair text-[40px] md:text-[52px] font-medium leading-[1.1] tracking-tight" style={{ color: C.ink }}>
           Three specialties,
           <br />
-          <span className="italic" style={{ color: C.gold }}>handled with care.</span>
+          <span className="italic" style={{ color: C.cerulean }}>handled with care.</span>
         </h2>
       </motion.div>
 
@@ -440,26 +592,40 @@ function Services() {
             className="card-lift p-9 rounded-sm relative bg-white overflow-hidden"
             style={{ border: "1px solid rgba(14,38,87,0.10)" }}
           >
-            {/* Subtle watercolor wash in the upper-right corner */}
+            {/* Watercolor wash — alternating ice/powder/sky blue corners */}
             <div
               aria-hidden
-              className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none"
-              style={{ background: `radial-gradient(circle, ${i % 2 === 0 ? "rgba(155,197,236,0.35)" : "rgba(242,225,176,0.30)"} 0%, transparent 70%)` }}
+              className="absolute -top-20 -right-20 w-56 h-56 rounded-full pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${
+                  i === 0 ? "rgba(214,232,247,0.85)" : i === 1 ? "rgba(143,187,227,0.55)" : "rgba(187,216,238,0.70)"
+                } 0%, transparent 70%)`,
+              }}
+            />
+            <div
+              aria-hidden
+              className="absolute -bottom-16 -left-16 w-44 h-44 rounded-full pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${
+                  i === 0 ? "rgba(187,216,238,0.55)" : i === 1 ? "rgba(214,232,247,0.70)" : "rgba(143,187,227,0.45)"
+                } 0%, transparent 75%)`,
+              }}
             />
 
             <div className="relative z-10">
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center mb-7"
                 style={{
-                  background: `linear-gradient(160deg, rgba(155,197,236,0.18), rgba(184,134,43,0.10))`,
-                  border: `1px solid ${C.gold}`,
+                  background: `linear-gradient(160deg, ${C.ice}, ${C.powder} 60%, ${C.skyPale})`,
+                  border: `1px solid ${C.skyMid}`,
+                  boxShadow: `inset 0 0 0 4px rgba(255,255,255,0.5), 0 8px 24px -10px rgba(31,88,176,0.30)`,
                 }}
               >
-                <s.Icon size={22} strokeWidth={1.4} style={{ color: C.gold }} />
+                <s.Icon size={22} strokeWidth={1.4} style={{ color: C.cerulean }} />
               </div>
 
               <h3 className="font-playfair text-2xl mb-2" style={{ color: C.ink }}>{s.title}</h3>
-              <p className="font-playfair italic text-[14px] mb-5" style={{ color: C.gold }}>
+              <p className="font-playfair italic text-[14px] mb-5" style={{ color: C.cerulean }}>
                 {s.tagline}
               </p>
 
@@ -469,22 +635,23 @@ function Services() {
 
               <div className="hairline-cool mb-5" />
 
-              <p className="eyebrow mb-3" style={{ color: C.royal }}>What to bring</p>
+              <p className="eyebrow mb-3" style={{ color: C.cerulean }}>What to bring</p>
               <ul className="space-y-2.5 mb-7">
                 {s.docs.map((d) => (
                   <li key={d} className="flex items-start gap-2.5 text-[13px] leading-[1.6]" style={{ color: "#4A5675" }}>
-                    <Check size={14} strokeWidth={2} className="mt-0.5 shrink-0" style={{ color: C.gold }} />
+                    <Check size={14} strokeWidth={2} className="mt-0.5 shrink-0" style={{ color: C.cerulean }} />
                     {d}
                   </li>
                 ))}
               </ul>
 
               <div className="flex items-center justify-between pt-5" style={{ borderTop: "1px solid rgba(14,38,87,0.08)" }}>
-                <span className="text-[12px] font-semibold tracking-wider uppercase" style={{ color: C.ink }}>
+                <span className="text-[12px] font-semibold tracking-wider uppercase" style={{ color: C.royal }}>
                   {s.price}
                 </span>
-                <a href="#contact" className="text-[12px] font-semibold uppercase tracking-wider gold-underline" style={{ color: C.gold }}>
+                <a href="#contact" className="inline-flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wider link-underline" style={{ color: C.cerulean }}>
                   Book
+                  <ArrowRight size={12} strokeWidth={2} />
                 </a>
               </div>
             </div>
@@ -515,7 +682,7 @@ function HowItWorks() {
         <h2 className="font-playfair text-[40px] md:text-[52px] font-medium leading-[1.1] tracking-tight" style={{ color: C.ink }}>
           Three steps from
           <br />
-          <span className="italic" style={{ color: C.gold }}>request to seal.</span>
+          <span className="italic" style={{ color: C.cerulean }}>request to seal.</span>
         </h2>
       </motion.div>
 
@@ -523,8 +690,8 @@ function HowItWorks() {
         <div
           className="hidden md:block absolute top-12 left-[16%] right-[16%] h-px"
           style={{
-            background: `linear-gradient(to right, ${C.cerulean} 0%, ${C.goldSoft} 50%, ${C.cerulean} 100%)`,
-            opacity: 0.55,
+            background: `linear-gradient(to right, ${C.skyMid}, ${C.cerulean}, ${C.royal}, ${C.cerulean}, ${C.skyMid})`,
+            opacity: 0.7,
           }}
         />
 
@@ -538,16 +705,17 @@ function HowItWorks() {
             className="relative"
           >
             <div
-              className="relative z-10 mx-auto w-24 h-24 rounded-full flex items-center justify-center bg-white"
+              className="relative z-10 mx-auto w-24 h-24 rounded-full flex items-center justify-center"
               style={{
-                border: `1px solid ${C.gold}`,
-                boxShadow: `0 16px 40px -20px rgba(63,134,201,0.45), 0 0 0 6px rgba(155,197,236,0.18)`,
+                background: `linear-gradient(160deg, ${C.ice}, ${C.powder} 70%, ${C.skyPale})`,
+                border: `1px solid ${C.skyMid}`,
+                boxShadow: `0 0 0 6px rgba(143,187,227,0.20), 0 16px 40px -18px rgba(31,88,176,0.45)`,
               }}
             >
-              <s.Icon size={26} strokeWidth={1.3} style={{ color: C.royal }} />
+              <s.Icon size={26} strokeWidth={1.3} style={{ color: C.cerulean }} />
             </div>
 
-            <p className="font-playfair text-center mt-6 mb-2" style={{ color: C.gold, fontSize: 14, letterSpacing: "0.3em" }}>
+            <p className="font-playfair text-center mt-6 mb-2" style={{ color: C.cerulean, fontSize: 14, letterSpacing: "0.3em" }}>
               {s.n}
             </p>
             <h3 className="font-playfair text-xl text-center mb-3" style={{ color: C.ink }}>{s.title}</h3>
@@ -578,7 +746,7 @@ function Pricing() {
           <h2 className="font-playfair text-[40px] md:text-[52px] font-medium leading-[1.1] tracking-tight mb-8" style={{ color: C.ink }}>
             Transparent rates.
             <br />
-            <span className="italic" style={{ color: C.gold }}>No surprises.</span>
+            <span className="italic" style={{ color: C.cerulean }}>No surprises.</span>
           </h2>
           <p className="text-[15px] leading-[1.8] mb-10" style={{ color: "#4A5675" }}>
             Massachusetts caps notarial fees at $10 per act. Loan-signing and apostille fees vary by complexity. Travel charges apply outside downtown Boston. Use the calculator for a quick estimate — final pricing is confirmed at booking.
@@ -594,7 +762,7 @@ function Pricing() {
               <div key={r.label}>
                 <div className="flex items-center justify-between py-4">
                   <span className="text-[14px]" style={{ color: C.ink }}>{r.label}</span>
-                  <span className="text-[13px] font-medium tracking-wide" style={{ color: C.gold }}>{r.note}</span>
+                  <span className="text-[13px] font-medium tracking-wide" style={{ color: C.cerulean }}>{r.note}</span>
                 </div>
                 {i < 3 && <div className="hairline-cool" />}
               </div>
@@ -610,8 +778,8 @@ function Pricing() {
           style={{ boxShadow: "0 30px 90px -40px rgba(8,21,61,0.5)" }}
         >
           <div className="flex items-center gap-3 mb-1">
-            <Stamp size={18} strokeWidth={1.5} style={{ color: C.goldSoft }} />
-            <p className="eyebrow" style={{ color: C.goldSoft }}>Estimate</p>
+            <Stamp size={18} strokeWidth={1.5} style={{ color: C.skyMid }} />
+            <p className="eyebrow" style={{ color: C.skyMid }}>Estimate</p>
           </div>
           <h3 className="font-playfair text-3xl text-white mb-9">Price calculator</h3>
 
@@ -654,7 +822,7 @@ function Pricing() {
               <p className="eyebrow mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>Estimated total</p>
               <p className="text-white/40 text-[12px]">Final price confirmed at booking</p>
             </div>
-            <p className="font-playfair text-5xl font-medium" style={{ color: C.goldSoft }}>
+            <p className="font-playfair text-5xl font-medium" style={{ color: C.powder }}>
               ${total.toLocaleString()}
             </p>
           </div>
@@ -686,7 +854,7 @@ function Testimonials() {
         <h2 className="font-playfair text-white text-[40px] md:text-[52px] font-medium leading-[1.1] tracking-tight">
           Trusted by clients
           <br />
-          <span className="italic" style={{ color: C.goldSoft }}>across Greater Boston.</span>
+          <span className="italic" style={{ color: C.skyMid }}>across Greater Boston.</span>
         </h2>
       </motion.div>
 
@@ -704,7 +872,7 @@ function Testimonials() {
               border: "1px solid rgba(217,174,82,0.18)",
             }}
           >
-            <Quote size={28} strokeWidth={1} fill={C.gold} stroke={C.gold} className="opacity-70 mb-5" />
+            <Quote size={28} strokeWidth={1} fill={C.skyMid} stroke={C.skyMid} className="opacity-80 mb-5" />
             <Stars n={t.rating} />
             <blockquote className="text-white/80 text-[14.5px] leading-[1.75] mt-5 mb-7 font-playfair italic">
               &ldquo;{t.text}&rdquo;
@@ -719,8 +887,8 @@ function Testimonials() {
                 className="w-10 h-10 rounded-full flex items-center justify-center font-playfair text-[13px]"
                 style={
                   i === 1
-                    ? { background: "rgba(155,197,236,0.18)", color: C.skyMid, border: `1px solid ${C.cerulean}` }
-                    : { background: "rgba(217,174,82,0.15)", color: C.goldSoft, border: `1px solid ${C.gold}` }
+                    ? { background: "rgba(214,232,247,0.20)", color: C.powder, border: `1px solid ${C.skyMid}` }
+                    : { background: "rgba(143,187,227,0.18)", color: C.skyMid, border: `1px solid ${C.cerulean}` }
                 }
                 aria-hidden
               >
@@ -751,7 +919,7 @@ function FAQ() {
           <h2 className="font-playfair text-[40px] md:text-[48px] font-medium leading-[1.1] tracking-tight mb-6" style={{ color: C.ink }}>
             Common
             <br />
-            <span className="italic" style={{ color: C.gold }}>questions.</span>
+            <span className="italic" style={{ color: C.cerulean }}>questions.</span>
           </h2>
           <p className="text-[14.5px] leading-[1.75]" style={{ color: "#4A5675" }}>
             A quick answer for the things clients ask most. Don&rsquo;t see yours? Call or email — I&rsquo;m happy to help.
@@ -780,7 +948,7 @@ function FAQ() {
                   strokeWidth={1.5}
                   className="shrink-0 transition-transform"
                   style={{
-                    color: C.gold,
+                    color: C.cerulean,
                     transform: open === i ? "rotate(180deg)" : "rotate(0deg)",
                   }}
                 />
@@ -841,7 +1009,7 @@ function Contact() {
         <h2 className="font-playfair text-[40px] md:text-[52px] font-medium leading-[1.1] tracking-tight" style={{ color: C.ink }}>
           Book your
           <br />
-          <span className="italic" style={{ color: C.gold }}>appointment.</span>
+          <span className="italic" style={{ color: C.cerulean }}>appointment.</span>
         </h2>
       </motion.div>
 
@@ -856,14 +1024,18 @@ function Contact() {
               <div key={c.label} className="flex items-start gap-5">
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(184,134,43,0.08)", border: `1px solid ${C.gold}` }}
+                  style={{
+                    background: `linear-gradient(160deg, ${C.ice}, ${C.powder} 60%, ${C.skyPale})`,
+                    border: `1px solid ${C.skyMid}`,
+                    boxShadow: "inset 0 0 0 3px rgba(255,255,255,0.6)",
+                  }}
                 >
-                  <c.Icon size={18} strokeWidth={1.4} style={{ color: C.gold }} />
+                  <c.Icon size={18} strokeWidth={1.4} style={{ color: C.cerulean }} />
                 </div>
                 <div className="pt-1.5">
-                  <p className="eyebrow mb-1.5" style={{ color: C.gold }}>{c.label}</p>
+                  <p className="eyebrow mb-1.5" style={{ color: C.cerulean }}>{c.label}</p>
                   {c.href ? (
-                    <a href={c.href} className="font-playfair text-lg gold-underline" style={{ color: C.ink }}>
+                    <a href={c.href} className="font-playfair text-lg link-underline" style={{ color: C.ink }}>
                       {c.value}
                     </a>
                   ) : (
@@ -900,9 +1072,9 @@ function Contact() {
             >
               <div
                 className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
-                style={{ background: "rgba(184,134,43,0.15)", border: `1px solid ${C.gold}` }}
+                style={{ background: "rgba(143,187,227,0.15)", border: `1px solid ${C.skyMid}` }}
               >
-                <BadgeCheck size={28} strokeWidth={1.5} style={{ color: C.goldSoft }} />
+                <BadgeCheck size={28} strokeWidth={1.5} style={{ color: C.powder }} />
               </div>
               <h3 className="font-playfair text-3xl text-white mb-3">Request received</h3>
               <p className="text-white/65 text-[14px] leading-[1.7] max-w-xs mx-auto">
@@ -912,8 +1084,8 @@ function Contact() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-1">
               <div className="flex items-center gap-3 mb-1">
-                <FileSignature size={18} strokeWidth={1.5} style={{ color: C.goldSoft }} />
-                <p className="eyebrow" style={{ color: C.goldSoft }}>New request</p>
+                <FileSignature size={18} strokeWidth={1.5} style={{ color: C.skyMid }} />
+                <p className="eyebrow" style={{ color: C.skyMid }}>New request</p>
               </div>
               <h3 className="font-playfair text-3xl text-white mb-8">Appointment details</h3>
 
@@ -992,8 +1164,8 @@ function Footer() {
               <Monogram size={48} />
               <div>
                 <p className="font-playfair text-white text-2xl">Tania Guity</p>
-                <p className="eyebrow mt-1" style={{ color: C.goldSoft, fontSize: 10 }}>
-                  Notary · Loan Signing · Apostille
+                <p className="eyebrow mt-1" style={{ color: C.skyMid, fontSize: 10 }}>
+                  Notary &middot; Loan Signing &middot; Apostille
                 </p>
               </div>
             </div>
@@ -1003,17 +1175,17 @@ function Footer() {
           </div>
 
           <div className="md:col-span-3">
-            <p className="eyebrow mb-4" style={{ color: C.goldSoft }}>Contact</p>
-            <a href="tel:6176751974" className="block text-white text-[14px] mb-2 gold-underline w-fit">
+            <p className="eyebrow mb-4" style={{ color: C.skyMid }}>Contact</p>
+            <a href="tel:6176751974" className="block text-white text-[14px] mb-2 link-underline w-fit">
               617-675-1974
             </a>
-            <a href="mailto:Tania.Guity@outlook.com" className="block text-white/70 text-[13px] gold-underline w-fit">
+            <a href="mailto:Tania.Guity@outlook.com" className="block text-white/70 text-[13px] link-underline w-fit">
               Tania.Guity@outlook.com
             </a>
           </div>
 
           <div className="md:col-span-4">
-            <p className="eyebrow mb-4" style={{ color: C.goldSoft }}>Hours & area</p>
+            <p className="eyebrow mb-4" style={{ color: C.skyMid }}>Hours &amp; area</p>
             <p className="text-white text-[14px] mb-2">Monday – Saturday  ·  8 AM to 8 PM</p>
             <p className="text-white/70 text-[13px]">Boston, Brookline &amp; beyond</p>
           </div>
